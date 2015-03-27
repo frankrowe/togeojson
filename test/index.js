@@ -2,6 +2,7 @@ var test = require('tape').test,
     assert = require('assert'),
     glob = require('glob'),
     fs = require('fs'),
+    geojsonhint = require('geojsonhint'),
     tj = require('../');
 
 if (!process.browser) {
@@ -20,9 +21,12 @@ function kmlFixtureEqual(t, file) {
         var output = tj.kml(toDOM(fs.readFileSync(file)));
         fs.writeFileSync(file + '.geojson', JSON.stringify(output, null, 4));
     }
+    var gj = fs.readFileSync(file + '.geojson', 'utf8')
+    var valid = geojsonhint.hint(gj)
+    t.deepEqual(valid, [], 'valid geojson')
     t.equal(
         JSON.stringify(tj.kml(toDOM(fs.readFileSync(file))), null, 4),
-        fs.readFileSync(file + '.geojson', 'utf8'),
+        gj,
         file);
 }
 
@@ -32,9 +36,12 @@ function gpxFixtureEqual(t, file) {
         fs.writeFileSync(file + '.geojson', JSON.stringify(output, null, 4));
     }
 
+    var gj = JSON.parse(fs.readFileSync(file + '.geojson', 'utf8'))
+    var valid = geojsonhint.hint(gj)
+    t.deepEqual(valid, [], 'valid geojson')
     t.deepEqual(
         tj.gpx(toDOM(fs.readFileSync(file, 'utf8'))),
-        JSON.parse(fs.readFileSync(file + '.geojson', 'utf8')),
+        gj,
         file);
 }
 

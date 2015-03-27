@@ -14,6 +14,7 @@
   "devDependencies": {
     "brfs": "~0.2.1",
     "coveralls": "~2.10.0",
+    "geojsonhint": "^1.0.0",
     "glob": "^4.2.1",
     "istanbul": "~0.2.11",
     "tape": "~3.0.3"
