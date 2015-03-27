@@ -41,7 +41,8 @@ var toGeoJSON = (function() {
         var coords = v.replace(trimSpace, '').split(splitSpace),
             o = [];
         for (var i = 0; i < coords.length; i++) {
-            o.push(coord1(coords[i]));
+            var c = coord1(coords[i]);
+            if (c.length > 1) o.push(c);
         }
         return o;
     }
@@ -84,6 +85,12 @@ var toGeoJSON = (function() {
         // IE9 will create a new XMLSerializer but it'll crash immediately.
         if (str.xml !== undefined) return str.xml;
         return serializer.serializeToString(str);
+    }
+
+    function checkGeoms(features) {
+        var fs = []
+        features.forEach(function(f) { if (f.coordinates.length) fs.push(f) })
+        return fs
     }
 
     var t = {
@@ -171,7 +178,7 @@ var toGeoJSON = (function() {
                     }
                 }
                 return {
-                    geoms: geoms,
+                    geoms: checkGeoms(geoms),
                     coordTimes: coordTimes
                 };
             }
